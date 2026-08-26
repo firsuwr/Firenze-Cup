@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Firenze Cup 2026 — Team info</title>
+<meta name="description" content="Firenze Cup 2026 underwater rugby tournament, Piscina Paolo Costoli, Florence. Tell us who sleeps at the pool and who joins the Saturday dinner.">
+<meta property="og:title" content="Firenze Cup 2026 — Team info">
+<meta property="og:description" content="Sleeping at the pool, Saturday dinner, first-timers. Two minutes.">
+<meta property="og:image" content="https://raw.githubusercontent.com/Andrea91x/immagini-UWR/cf9e13f6240e9fe83e99be32db149476337eb038/Logo-Firs.jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script>
+/* ============================================================
+   CONFIGURATION — the only part you need to touch
+   ============================================================
+   1) Create the Google Form for 2026 with the questions listed
+      in the README comment at the bottom of this file.
+   2) In the Form: three dots > "Get pre-filled link", fill every
+      field with a dummy value, click "Get link", copy the URL.
+   3) In that URL you will find entry.1234567890=dummy for every
+      question. Paste each ID below, keeping the "entry." prefix.
+   4) Replace FORM_ID with the long code in your form URL
+      (.../forms/d/e/FORM_ID/viewform).
+   Until the IDs are real, the page blocks sending and shows a
+   warning instead of losing someone's answers.
+   ============================================================ */
+const CONFIG = {
+  formId: "PASTE_FORM_ID_HERE",
+
+  entries: {
+    email:          "emailAddress",        // works only if the Form collects email as "Responder input"
+    team:           "entry.000000001",
+    contact:        "entry.000000002",
+    phone:          "entry.000000003",
+
+    sleepMen:       "entry.000000004",
+    sleepWomen:     "entry.000000005",
+    sleepCompanions:"entry.000000006",
+    sleepKids:      "entry.000000007",
+    sleepUndecided: "entry.000000008",
+
+    newbiesCount:   "entry.000000009",
+    newbiesNames:   "entry.000000010",
+
+    dinnerMeat:     "entry.000000011",
+    dinnerVegan:    "entry.000000012",
+    dinnerGf:       "entry.000000013",
+    dinnerOther:    "entry.000000014",
+    dietary:        "entry.000000015",
+
+    notes:          "entry.000000016"
+  },
+
+  event: {
+    name:    "Firenze Cup",
+    year:    "2026",
+    dates:   "5–6 September 2026",
+    venue:   "Piscina Paolo Costoli · Florence",
+    dinnerDate: "Saturday 5 September",
+    dinnerPrice: 28,
+    currency: "€",
+    logo: "https://raw.githubusercontent.com/Andrea91x/immagini-UWR/cf9e13f6240e9fe83e99be32db149476337eb038/Logo-Firs.jpeg",
+    contactEmail: "firs.uwr@gmail.com"
+  }
+};
+</script>
+
+<style>
+:root{
+  --abyss:#03192a;
+  --deep:#0a3f5e;
+  --mid:#14618a;
+  --cyan:#35d0e0;
+  --foam:#d7ecf2;
+  --mute:#8aafc0;
+  --giglio:#e0364b;
+  --sand:#e8dcc3;
+
+  --panel:rgba(5,38,58,.58);
+  --edge:rgba(53,208,224,.22);
+  --edge-soft:rgba(53,208,224,.12);
+
+  --display:"Archivo","Arial Narrow",sans-serif;
+  --body:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+
+*{box-sizing:border-box}
+
+html{
+  background-color:var(--abyss);
+  background-image:linear-gradient(180deg,
+    #e6eef1 0,
+    #b9d6e0 4%,
+    #4e9bb8 10%,
+    #14618a 22%,
+    #0a3f5e 42%,
+    #062c45 62%,
+    #041e30 80%,
+    #03192a 100%);
+  background-repeat:no-repeat;
+}
+
+body{
+  margin:0;
+  font-family:var(--body);
+  color:var(--foam);
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- water light ---------- */
+.caustics{
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  opacity:.07; mix-blend-mode:screen;
+  background:
+    repeating-linear-gradient(72deg, transparent 0 34px, #9beef8 34px 36px, transparent 36px 78px),
+    repeating-linear-gradient(-58deg, transparent 0 46px, #9beef8 46px 47px, transparent 47px 96px);
+  animation:drift 26s linear infinite;
+}
+@keyframes drift{
+  0%{background-position:0 0, 0 0}
+  100%{background-position:340px 220px, -260px 300px}
+}
+
+/* ---------- warning strip ---------- */
+.notready{
+  position:relative; z-index:3;
+  background:var(--giglio); color:#fff;
+  font-family:var(--mono); font-size:12.5px; letter-spacing:.02em;
+  padding:10px 18px; text-align:center;
+}
+.notready code{background:rgba(0,0,0,.25); padding:1px 5px}
+
+/* ---------- deck / hero ---------- */
+.deck{
+  position:relative; z-index:2;
+  padding:36px 22px 64px;
+  max-width:1040px; margin:0 auto;
+  color:#0a2b3d;
+  text-align:center;
+}
+.plaque{
+  display:inline-block; background:#fff;
+  padding:12px; border-radius:3px;
+  box-shadow:0 10px 34px rgba(3,25,42,.28);
+}
+.plaque img{display:block; width:96px; height:auto}
+
+.eyebrow{
+  margin:26px 0 0;
+  font-family:var(--mono); font-size:12px; font-weight:600;
+  letter-spacing:.34em; text-transform:uppercase; color:#1c5c7a;
+}
+h1{
+  font-family:var(--display); font-stretch:120%; font-weight:900;
+  text-transform:uppercase;
+  font-size:clamp(2.7rem,11vw,6rem);
+  line-height:.88; letter-spacing:-.005em;
+  margin:.18em 0 0; color:#072536;
+}
+h1 .yr{ -webkit-text-stroke:2px #072536; color:transparent; }
+.meta{
+  margin:22px auto 0; max-width:34ch;
+  font-family:var(--mono); font-size:13px; color:#1c5c7a;
+  letter-spacing:.02em;
+}
+.meta b{color:#072536; font-weight:600}
+.lede{
+  margin:26px auto 0; max-width:46ch;
+  font-size:17px; color:#0f3d55;
+}
+
+/* ---------- depth rail ---------- */
+.rail{
+  position:fixed; left:26px; top:50%; transform:translateY(-50%);
+  z-index:4; display:none;
+}
+@media(min-width:1080px){ .rail{display:block} }
+.rail ol{list-style:none; margin:0; padding:0; position:relative}
+.rail ol::before{
+  content:""; position:absolute; left:5px; top:6px; bottom:6px;
+  width:1px; background:var(--edge-soft);
+}
+.rail li{
+  position:relative; padding:0 0 34px 22px;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  color:var(--mute); opacity:.5; transition:opacity .3s, color .3s;
+  text-transform:uppercase; white-space:nowrap;
+}
+.rail li:last-child{padding-bottom:0}
+.rail li::before{
+  content:""; position:absolute; left:0; top:5px;
+  width:11px; height:11px; border:1px solid var(--edge);
+  background:var(--abyss); border-radius:50%;
+  transition:background .3s, border-color .3s, transform .3s;
+}
+.rail li.on{opacity:1; color:var(--cyan)}
+.rail li.on::before{background:var(--cyan); border-color:var(--cyan); transform:scale(1.25)}
+
+/* ---------- layout ---------- */
+main{position:relative; z-index:2; max-width:720px; margin:0 auto; padding:0 20px 90px}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--edge);
+  border-radius:2px;
+  padding:26px 24px 28px;
+  margin:0 0 22px;
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+}
+.card > :last-child{margin-bottom:0}
+
+.depth{
+  display:flex; align-items:baseline; gap:12px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--cyan);
+  margin:0 0 4px;
+}
+.depth .bar{flex:1; height:1px; background:var(--edge-soft)}
+
+h2{
+  font-family:var(--display); font-stretch:112%; font-weight:800;
+  text-transform:uppercase; font-size:clamp(1.35rem,4.4vw,1.75rem);
+  letter-spacing:.005em; line-height:1.05;
+  margin:0 0 8px; color:#fff;
+}
+.hint{margin:0 0 20px; color:var(--mute); font-size:14.5px}
+.hint strong{color:var(--foam); font-weight:600}
+
+/* ---------- fields ---------- */
+.field{margin:0 0 18px}
+.field:last-child{margin-bottom:0}
+label{display:block; font-size:14px; font-weight:500; margin:0 0 7px; color:var(--foam)}
+.req{color:var(--giglio); margin-left:3px}
+.sub{display:block; font-weight:400; color:var(--mute); font-size:13px; margin-top:2px}
+
+input[type=text],input[type=email],input[type=tel],textarea{
+  width:100%; font-family:var(--body); font-size:16px; color:#fff;
+  background:rgba(2,20,33,.62);
+  border:1px solid var(--edge-soft); border-radius:2px;
+  padding:11px 13px; transition:border-color .18s, background .18s;
+}
+textarea{resize:vertical; min-height:88px; line-height:1.5}
+input::placeholder,textarea::placeholder{color:#5f8698}
+input:focus,textarea:focus{outline:none; border-color:var(--cyan); background:rgba(2,20,33,.85)}
+input:focus-visible,textarea:focus-visible,button:focus-visible{
+  outline:2px solid var(--cyan); outline-offset:2px;
+}
+.invalid{border-color:var(--giglio) !important}
+
+/* ---------- counters ---------- */
+.count{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px; padding:11px 4px 11px 0;
+  border-bottom:1px solid var(--edge-soft);
+}
+.count:first-of-type{border-top:1px solid var(--edge-soft)}
+.count .who{font-size:15px; line-height:1.3}
+.count .who small{display:block; color:var(--mute); font-size:12.5px}
+
+.stepper{display:flex; align-items:center; gap:0; flex:0 0 auto}
+.stepper button{
+  width:38px; height:38px; flex:0 0 38px;
+  font-family:var(--mono); font-size:17px; line-height:1;
+  color:var(--cyan); background:rgba(2,20,33,.6);
+  border:1px solid var(--edge-soft); cursor:pointer;
+  transition:background .15s, color .15s;
+}
+.stepper button:hover{background:var(--cyan); color:var(--abyss)}
+.stepper input{
+  width:56px; height:38px; text-align:center;
+  font-family:var(--mono); font-size:16px; font-weight:600; color:#fff;
+  background:rgba(2,20,33,.62);
+  border:1px solid var(--edge-soft); border-left:0; border-right:0;
+  -moz-appearance:textfield;
+}
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0}
+.stepper input:focus{outline:none; background:rgba(2,20,33,.9)}
+.stepper input.zero{color:#5f8698}
+
+.tally{
+  display:flex; justify-content:space-between; align-items:baseline;
+  margin:18px 0 0; padding-top:14px; border-top:1px solid var(--edge);
+  font-family:var(--mono); font-size:13px; color:var(--mute);
+  letter-spacing:.04em;
+}
+.tally b{font-size:20px; color:var(--cyan); font-weight:600}
+.tally .cost{color:var(--sand)}
+
+/* ---------- manifest ---------- */
+.manifest{
+  background:rgba(2,20,33,.72);
+  border:1px solid var(--edge);
+  border-left:3px solid var(--cyan);
+}
+.manifest h2{font-size:1.15rem}
+.mrow{
+  display:flex; align-items:baseline; gap:10px;
+  font-family:var(--mono); font-size:13.5px; padding:7px 0;
+}
+.mrow .lbl{color:var(--mute); text-transform:uppercase; letter-spacing:.1em; font-size:11px}
+.mrow .dots{flex:1; border-bottom:1px dotted rgba(138,175,192,.35); transform:translateY(-3px)}
+.mrow .val{color:#fff; font-weight:600}
+.mrow.total .val{color:var(--sand)}
+
+/* ---------- send ---------- */
+.send{
+  width:100%; margin-top:8px;
+  font-family:var(--display); font-stretch:114%; font-weight:800;
+  text-transform:uppercase; letter-spacing:.08em; font-size:16px;
+  color:var(--abyss); background:var(--cyan);
+  border:0; border-radius:2px; padding:17px 20px; cursor:pointer;
+  transition:filter .18s, transform .06s;
+}
+.send:hover{filter:brightness(1.12)}
+.send:active{transform:translateY(1px)}
+.send[disabled]{opacity:.45; cursor:not-allowed}
+
+.errors{
+  margin:0 0 16px; padding:0; list-style:none;
+  color:#ffb3bd; font-size:14px;
+}
+.errors li{padding:5px 0 5px 14px; border-left:2px solid var(--giglio)}
+.errors:empty{display:none; margin:0}
+
+/* ---------- done ---------- */
+.done{display:none; text-align:center; padding:44px 24px}
+.done.show{display:block}
+.done h2{font-size:clamp(1.6rem,6vw,2.4rem); margin-bottom:12px}
+.done p{color:var(--mute); max-width:42ch; margin:0 auto 10px}
+.done .recap{margin:26px auto 0; max-width:380px; text-align:left}
+
+footer{
+  position:relative; z-index:2; text-align:center;
+  padding:0 20px 60px; color:var(--mute);
+  font-family:var(--mono); font-size:12px; letter-spacing:.05em;
+}
+footer a{color:var(--cyan); text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+@media(max-width:520px){
+  .deck{padding:26px 18px 46px}
+  .card{padding:22px 18px 24px}
+  .count{flex-direction:row; align-items:center}
+  .count .who{font-size:14.5px}
+  .stepper button{width:36px; flex-basis:36px}
+  .stepper input{width:48px}
+}
+@media(prefers-reduced-motion:reduce){
+  .caustics{animation:none}
+  *{transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<div class="caustics" aria-hidden="true"></div>
+<div id="notready" class="notready" hidden></div>
+
+<header class="deck">
+  <div class="plaque"><img id="logo" src="" alt="FIRS Firenze Rugby Subacqueo"></div>
+  <p class="eyebrow">Underwater rugby</p>
+  <h1>Firenze<br>Cup <span class="yr" id="hyear"></span></h1>
+  <p class="meta"><b id="hdates"></b><br><span id="hvenue"></span></p>
+  <p class="lede">Tell us who sleeps at the pool and who stays for dinner. Numbers only, two minutes. Send it again any time something changes — we always use your latest answer.</p>
+</header>
+
+<nav class="rail" aria-label="Form progress">
+  <ol id="rail">
+    <li data-for="s1">1 m · Team</li>
+    <li data-for="s2">2 m · Sleeping</li>
+    <li data-for="s3">3 m · First timers</li>
+    <li data-for="s4">4 m · Dinner</li>
+    <li data-for="s5">5 m · Notes</li>
+  </ol>
+</nav>
+
+<main>
+  <form id="form" method="POST" target="sink" novalidate>
+
+    <section class="card" id="s1">
+      <p class="depth"><span>−1.0 m</span><span class="bar"></span><span>Team</span></p>
+      <h2>Who is answering</h2>
+      <p class="hint">One form per team. If you manage two teams, send it twice.</p>
+
+      <div class="field">
+        <label for="email">Email<span class="req">*</span>
+          <span class="sub">We send a copy of your answers here.</span></label>
+        <input type="email" id="email" data-key="email" autocomplete="email" placeholder="captain@yourclub.com">
+      </div>
+      <div class="field">
+        <label for="team">Team name<span class="req">*</span></label>
+        <input type="text" id="team" data-key="team" placeholder="e.g. Firenze Rugby Subacqueo">
+      </div>
+      <div class="field">
+        <label for="contact">Contact person<span class="req">*</span></label>
+        <input type="text" id="contact" data-key="contact" autocomplete="name" placeholder="First and last name">
+      </div>
+      <div class="field">
+        <label for="phone">Phone or WhatsApp
+          <span class="sub">Optional. Only used during the tournament weekend.</span></label>
+        <input type="tel" id="phone" data-key="phone" autocomplete="tel" placeholder="+39 …">
+      </div>
+    </section>
+
+    <section class="card" id="s2">
+      <p class="depth"><span>−2.0 m</span><span class="bar"></span><span>Sleeping</span></p>
+      <h2>Sleeping at the pool</h2>
+      <p class="hint">You can sleep inside the pool area with your own sleeping bag or mattress. Approximate numbers are fine for now — we will ask for the full name list later. Put <strong>0</strong> where it does not apply.</p>
+
+      <div class="count">
+        <span class="who">Male players</span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer male player">–</button><input type="number" id="sleepMen" data-key="sleepMen" data-group="sleep" min="0" max="99" value="0" inputmode="numeric" aria-label="Male players sleeping at the pool"><button type="button" data-step="1" aria-label="One more male player">+</button></span>
+      </div>
+      <div class="count">
+        <span class="who">Female players</span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer female player">–</button><input type="number" id="sleepWomen" data-key="sleepWomen" data-group="sleep" min="0" max="99" value="0" inputmode="numeric" aria-label="Female players sleeping at the pool"><button type="button" data-step="1" aria-label="One more female player">+</button></span>
+      </div>
+      <div class="count">
+        <span class="who">Companions<small>Partners, friends, supporters — not playing</small></span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer companion">–</button><input type="number" id="sleepCompanions" data-key="sleepCompanions" data-group="sleep" min="0" max="99" value="0" inputmode="numeric" aria-label="Companions sleeping at the pool"><button type="button" data-step="1" aria-label="One more companion">+</button></span>
+      </div>
+      <div class="count">
+        <span class="who">Children<small>Under 14, not playing</small></span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer child">–</button><input type="number" id="sleepKids" data-key="sleepKids" data-group="sleep" min="0" max="99" value="0" inputmode="numeric" aria-label="Children sleeping at the pool"><button type="button" data-step="1" aria-label="One more child">+</button></span>
+      </div>
+      <div class="count">
+        <span class="who">Still undecided<small>People who have not made up their mind yet</small></span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer undecided person">–</button><input type="number" id="sleepUndecided" data-key="sleepUndecided" data-group="sleep" min="0" max="99" value="0" inputmode="numeric" aria-label="Undecided people"><button type="button" data-step="1" aria-label="One more undecided person">+</button></span>
+      </div>
+
+      <p class="tally"><span>Sleeping at the pool</span><span><b id="sleepTotal">0</b> people</span></p>
+    </section>
+
+    <section class="card" id="s3">
+      <p class="depth"><span>−3.0 m</span><span class="bar"></span><span>First timers</span></p>
+      <h2>First tournament ever</h2>
+      <p class="hint">We celebrate everyone playing their first tournament. If you are reading this you are probably not a newbie, so keep it to yourself.</p>
+
+      <div class="count" style="border-bottom:0">
+        <span class="who">First timers in your team</span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer first timer">–</button><input type="number" id="newbiesCount" data-key="newbiesCount" min="0" max="99" value="0" inputmode="numeric" aria-label="Number of first timers"><button type="button" data-step="1" aria-label="One more first timer">+</button></span>
+      </div>
+
+      <div class="field" style="margin-top:18px">
+        <label for="newbiesNames">Full names of the first timers
+          <span class="sub">One per line. Leave empty if there are none.</span></label>
+        <textarea id="newbiesNames" data-key="newbiesNames" placeholder="Anna Rossi&#10;Piet de Vries"></textarea>
+      </div>
+    </section>
+
+    <section class="card" id="s4">
+      <p class="depth"><span>−4.0 m</span><span class="bar"></span><span>Dinner</span></p>
+      <h2>Dinner, <span id="dinnerDay"></span></h2>
+      <p class="hint">Inside the pool area, right after the last match — no swimming afterwards. Tuscan menu: starters, pasta, meat with a side dish, one beer or wine, still water included. <strong id="priceLine"></strong> per person, paid on site. Extra drinks are paid directly at the restaurant.</p>
+
+      <div class="count">
+        <span class="who">Meat menu</span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer meat menu">–</button><input type="number" id="dinnerMeat" data-key="dinnerMeat" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Meat menus"><button type="button" data-step="1" aria-label="One more meat menu">+</button></span>
+      </div>
+      <div class="count">
+        <span class="who">Vegan menu</span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer vegan menu">–</button><input type="number" id="dinnerVegan" data-key="dinnerVegan" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Vegan menus"><button type="button" data-step="1" aria-label="One more vegan menu">+</button></span>
+      </div>
+      <div class="count">
+        <span class="who">Gluten-free menu</span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer gluten free menu">–</button><input type="number" id="dinnerGf" data-key="dinnerGf" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Gluten free menus"><button type="button" data-step="1" aria-label="One more gluten free menu">+</button></span>
+      </div>
+      <div class="count">
+        <span class="who">Something else<small>Describe it in the field below</small></span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer special menu">–</button><input type="number" id="dinnerOther" data-key="dinnerOther" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Other menus"><button type="button" data-step="1" aria-label="One more special menu">+</button></span>
+      </div>
+
+      <p class="tally">
+        <span><b id="dinnerTotal">0</b> at dinner</span>
+        <span class="cost" id="dinnerCost">0 €</span>
+      </p>
+
+      <div class="field" style="margin-top:20px">
+        <label for="dietary">Allergies and special needs
+          <span class="sub">Tell us who and what. The kitchen needs this in advance.</span></label>
+        <textarea id="dietary" data-key="dietary" placeholder="e.g. Marta — lactose intolerant; Jonas — no fish"></textarea>
+      </div>
+    </section>
+
+    <section class="card" id="s5">
+      <p class="depth"><span>−5.0 m</span><span class="bar"></span><span>Notes</span></p>
+      <h2>Anything else</h2>
+      <p class="hint">Arrival time, late players, questions, requests — whatever helps us plan.</p>
+      <div class="field">
+        <label for="notes" class="sr-only">Notes</label>
+        <textarea id="notes" data-key="notes" placeholder="We arrive Friday night around 23:00…"></textarea>
+      </div>
+    </section>
+
+    <section class="card manifest">
+      <h2>Your manifest</h2>
+      <div class="mrow"><span class="lbl">Team</span><span class="dots"></span><span class="val" id="mTeam">—</span></div>
+      <div class="mrow"><span class="lbl">Sleeping at the pool</span><span class="dots"></span><span class="val" id="mSleep">0</span></div>
+      <div class="mrow"><span class="lbl">At the dinner</span><span class="dots"></span><span class="val" id="mDinner">0</span></div>
+      <div class="mrow"><span class="lbl">First timers</span><span class="dots"></span><span class="val" id="mNewbies">0</span></div>
+      <div class="mrow total"><span class="lbl">Dinner to pay on site</span><span class="dots"></span><span class="val" id="mCost">0 €</span></div>
+    </section>
+
+    <ul class="errors" id="errors"></ul>
+    <button type="submit" class="send" id="send">Send our numbers</button>
+  </form>
+
+  <section class="done card" id="done" aria-live="polite">
+    <h2>Got it. See you in Florence.</h2>
+    <p>A copy is on its way to your inbox.</p>
+    <p>Something changed? Open this page again and send new numbers — we always keep the latest one.</p>
+    <div class="recap">
+      <div class="mrow"><span class="lbl">Sleeping at the pool</span><span class="dots"></span><span class="val" id="dSleep">0</span></div>
+      <div class="mrow"><span class="lbl">At the dinner</span><span class="dots"></span><span class="val" id="dDinner">0</span></div>
+      <div class="mrow total"><span class="lbl">Dinner to pay on site</span><span class="dots"></span><span class="val" id="dCost">0 €</span></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p id="footEvent"></p>
+  <p>Questions? <a id="footMail" href="#"></a></p>
+</footer>
+
+<iframe name="sink" id="sink" style="display:none" title="hidden"></iframe>
+
+<script>
+(function(){
+  "use strict";
+  var E = CONFIG.event, F = CONFIG.entries;
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ---------- fill event strings ---------- */
+  $("logo").src = E.logo;
+  $("hyear").textContent = E.year;
+  $("hdates").textContent = E.dates;
+  $("hvenue").textContent = E.venue;
+  $("dinnerDay").textContent = E.dinnerDate;
+  $("priceLine").textContent = E.dinnerPrice + " " + E.currency;
+  $("footEvent").textContent = E.name + " " + E.year + " · " + E.venue;
+  var fm = $("footMail");
+  fm.textContent = E.contactEmail;
+  fm.href = "mailto:" + E.contactEmail;
+  document.title = E.name + " " + E.year + " — Team info";
+
+  /* ---------- wire the form to Google ---------- */
+  var form = $("form");
+  var missing = [];
+  if (/PASTE_FORM_ID/.test(CONFIG.formId)) missing.push("formId");
+  Object.keys(F).forEach(function(k){
+    if (/^entry\.0+\d?$/.test(F[k]) || /entry\.0{6,}/.test(F[k])) missing.push(k);
+  });
+
+  form.action = "https://docs.google.com/forms/d/e/" + CONFIG.formId + "/formResponse";
+  Array.prototype.forEach.call(form.querySelectorAll("[data-key]"), function(el){
+    var key = el.getAttribute("data-key");
+    if (F[key]) el.name = F[key];
+  });
+  ["fvv","pageHistory"].forEach(function(n,i){
+    var h = document.createElement("input");
+    h.type = "hidden"; h.name = n; h.value = i === 0 ? "1" : "0";
+    form.appendChild(h);
+  });
+
+  if (missing.length){
+    var w = $("notready");
+    w.hidden = false;
+    w.innerHTML = "Not connected to Google Forms yet — sending is disabled. Missing: <code>" +
+      missing.join("</code> <code>") + "</code>";
+    $("send").disabled = true;
+    $("send").textContent = "Sending disabled";
+  }
+
+  /* ---------- steppers ---------- */
+  function clamp(n){ n = parseInt(n,10); if (isNaN(n) || n < 0) n = 0; if (n > 99) n = 99; return n; }
+
+  document.addEventListener("click", function(e){
+    var btn = e.target.closest ? e.target.closest(".stepper button") : null;
+    if (!btn) return;
+    var input = btn.parentNode.querySelector("input");
+    input.value = clamp(clamp(input.value) + parseInt(btn.getAttribute("data-step"),10));
+    update();
+    save();
+  });
+
+  document.addEventListener("input", function(e){
+    if (e.target.type === "number"){ update(); }
+    save();
+  });
+  document.addEventListener("change", function(e){
+    if (e.target.type === "number"){ e.target.value = clamp(e.target.value); update(); save(); }
+  });
+
+  function sum(group){
+    var t = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-group="'+group+'"]'), function(el){
+      t += clamp(el.value);
+    });
+    return t;
+  }
+
+  function update(){
+    Array.prototype.forEach.call(document.querySelectorAll('.stepper input'), function(el){
+      el.classList.toggle("zero", clamp(el.value) === 0);
+    });
+    var s = sum("sleep"), d = sum("dinner"), cost = d * E.dinnerPrice;
+    $("sleepTotal").textContent = s;
+    $("dinnerTotal").textContent = d;
+    $("dinnerCost").textContent = cost + " " + E.currency;
+    $("mSleep").textContent = s;
+    $("mDinner").textContent = d;
+    $("mCost").textContent = cost + " " + E.currency;
+    $("mNewbies").textContent = clamp($("newbiesCount").value);
+    var team = $("team").value.trim();
+    $("mTeam").textContent = team || "—";
+  }
+
+  /* ---------- draft in the browser ---------- */
+  var KEY = "firenzecup-" + E.year;
+  function save(){
+    try{
+      var d = {};
+      Array.prototype.forEach.call(form.querySelectorAll("[data-key]"), function(el){ d[el.id] = el.value; });
+      localStorage.setItem(KEY, JSON.stringify(d));
+    }catch(err){}
+  }
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var d = JSON.parse(raw);
+      Object.keys(d).forEach(function(id){ if ($(id)) $(id).value = d[id]; });
+    }catch(err){}
+  }
+  load();
+  update();
+
+  /* ---------- validation ---------- */
+  function validate(){
+    var errs = [];
+    var required = [
+      ["email","your email address"],
+      ["team","your team name"],
+      ["contact","the name of the contact person"]
+    ];
+    required.forEach(function(r){
+      var el = $(r[0]), ok = el.value.trim() !== "";
+      if (ok && r[0] === "email") ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(el.value.trim());
+      el.classList.toggle("invalid", !ok);
+      if (!ok) errs.push("Add " + r[1] + ".");
+    });
+    if (sum("sleep") === 0 && sum("dinner") === 0){
+      errs.push("Every number is 0. Add at least one person sleeping at the pool or joining the dinner.");
+    }
+    var nb = clamp($("newbiesCount").value);
+    if (nb > 0 && $("newbiesNames").value.trim() === ""){
+      $("newbiesNames").classList.add("invalid");
+      errs.push("You listed " + nb + " first timer" + (nb>1?"s":"") + " — write their names so we can celebrate them.");
+    } else {
+      $("newbiesNames").classList.remove("invalid");
+    }
+    if (clamp($("dinnerOther").value) > 0 && $("dietary").value.trim() === ""){
+      $("dietary").classList.add("invalid");
+      errs.push("Describe the special menus under allergies and special needs.");
+    } else {
+      $("dietary").classList.remove("invalid");
+    }
+    return errs;
+  }
+
+  var sent = false;
+  form.addEventListener("submit", function(e){
+    if (missing.length){ e.preventDefault(); return; }
+    var errs = validate();
+    var box = $("errors");
+    box.innerHTML = "";
+    if (errs.length){
+      e.preventDefault();
+      errs.forEach(function(t){
+        var li = document.createElement("li");
+        li.textContent = t;
+        box.appendChild(li);
+      });
+      box.scrollIntoView({behavior:"smooth", block:"center"});
+      return;
+    }
+    sent = true;
+    $("send").disabled = true;
+    $("send").textContent = "Sending…";
+  });
+
+  $("sink").addEventListener("load", function(){
+    if (!sent) return;
+    $("dSleep").textContent = sum("sleep");
+    $("dDinner").textContent = sum("dinner");
+    $("dCost").textContent = (sum("dinner") * E.dinnerPrice) + " " + E.currency;
+    form.style.display = "none";
+    $("done").classList.add("show");
+    $("done").scrollIntoView({behavior:"smooth", block:"center"});
+    try{ localStorage.removeItem(KEY); }catch(err){}
+  });
+
+  /* ---------- depth rail ---------- */
+  var items = Array.prototype.slice.call(document.querySelectorAll("#rail li"));
+  if ("IntersectionObserver" in window && items.length){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (!en.isIntersecting) return;
+        items.forEach(function(li){
+          li.classList.toggle("on", li.getAttribute("data-for") === en.target.id);
+        });
+      });
+    }, {rootMargin:"-45% 0px -50% 0px"});
+    ["s1","s2","s3","s4","s5"].forEach(function(id){ if ($(id)) io.observe($(id)); });
+  }
+})();
+</script>
+
+<!--
+===============================================================
+GOOGLE FORM — questions to create, in this exact order
+Set every counter as "Short answer" with number validation
+(Response validation > Number > Greater than or equal to > 0).
+Do NOT use grids: they cap at 15 and make the sheet unreadable.
+
+Settings > Responses:
+  - Collect email addresses = "Responder input"  (mandatory, or
+    the emailAddress field below will not work)
+  - Send responders a copy = Always
+  - Limit to 1 response = OFF (teams must be able to resend)
+
+ 1. Email                              -> handled by "emailAddress"
+ 2. Team name                          Short answer
+ 3. Contact person                     Short answer
+ 4. Phone or WhatsApp                  Short answer
+ 5. Sleeping - male players            Short answer (number)
+ 6. Sleeping - female players          Short answer (number)
+ 7. Sleeping - companions              Short answer (number)
+ 8. Sleeping - children                Short answer (number)
+ 9. Sleeping - undecided               Short answer (number)
+10. First timers - how many            Short answer (number)
+11. First timers - names               Paragraph
+12. Dinner - meat menu                 Short answer (number)
+13. Dinner - vegan menu                Short answer (number)
+14. Dinner - gluten free menu          Short answer (number)
+15. Dinner - other menu                Short answer (number)
+16. Allergies and special needs        Paragraph
+17. Notes                              Paragraph
+===============================================================
+-->
+</body>
+</html>
