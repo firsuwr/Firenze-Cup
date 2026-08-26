@@ -16,43 +16,15 @@
 /* ============================================================
    CONFIGURATION — the only part you need to touch
    ============================================================
-   1) Create the Google Form for 2026 with the questions listed
-      in the README comment at the bottom of this file.
-   2) In the Form: three dots > "Get pre-filled link", fill every
-      field with a dummy value, click "Get link", copy the URL.
-   3) In that URL you will find entry.1234567890=dummy for every
-      question. Paste each ID below, keeping the "entry." prefix.
-   4) Replace FORM_ID with the long code in your form URL
-      (.../forms/d/e/FORM_ID/viewform).
-   Until the IDs are real, the page blocks sending and shows a
-   warning instead of losing someone's answers.
+   The page sends the answers straight to the Google Apps Script
+   web app, which writes them into the spreadsheet and emails a
+   confirmation. No Google Form involved.
+
+   If you redeploy the script, paste the new /exec URL here.
    ============================================================ */
 const CONFIG = {
-  formId: "PASTE_FORM_ID_HERE",
-
-  entries: {
-    email:          "emailAddress",        // works only if the Form collects email as "Responder input"
-    team:           "entry.000000001",
-    contact:        "entry.000000002",
-    phone:          "entry.000000003",
-
-    sleepMen:       "entry.000000004",
-    sleepWomen:     "entry.000000005",
-    sleepCompanions:"entry.000000006",
-    sleepKids:      "entry.000000007",
-    sleepUndecided: "entry.000000008",
-
-    newbiesCount:   "entry.000000009",
-    newbiesNames:   "entry.000000010",
-
-    dinnerMeat:     "entry.000000011",
-    dinnerVegan:    "entry.000000012",
-    dinnerGf:       "entry.000000013",
-    dinnerOther:    "entry.000000014",
-    dietary:        "entry.000000015",
-
-    notes:          "entry.000000016"
-  },
+  endpoint: "https://script.google.com/macros/s/AKfycbzshbrBQn9nwn09nKUJoyNFpLLVZjBLw6i0X1uAOKpCzE7uiaJQJq0bBFd11C6VluOB/exec",
+  token: "Qu32298374652!"!£££",
 
   event: {
     name:    "Firenze Cup",
@@ -383,7 +355,7 @@ footer a:hover{text-decoration:underline}
 </nav>
 
 <main>
-  <form id="form" method="POST" target="sink" novalidate>
+  <form id="form" novalidate>
 
     <section class="card" id="s1">
       <p class="depth"><span>−1.0 m</span><span class="bar"></span><span>Team</span></p>
@@ -509,6 +481,11 @@ footer a:hover{text-decoration:underline}
       <div class="mrow total"><span class="lbl">Dinner to pay on site</span><span class="dots"></span><span class="val" id="mCost">0 €</span></div>
     </section>
 
+    <div style="position:absolute;left:-9999px" aria-hidden="true">
+      <label for="website">Leave this field empty</label>
+      <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+    </div>
+
     <ul class="errors" id="errors"></ul>
     <button type="submit" class="send" id="send">Send our numbers</button>
   </form>
@@ -530,12 +507,12 @@ footer a:hover{text-decoration:underline}
   <p>Questions? <a id="footMail" href="#"></a></p>
 </footer>
 
-<iframe name="sink" id="sink" style="display:none" title="hidden"></iframe>
+
 
 <script>
 (function(){
   "use strict";
-  var E = CONFIG.event, F = CONFIG.entries;
+  var E = CONFIG.event;
   var $ = function(id){ return document.getElementById(id); };
 
   /* ---------- fill event strings ---------- */
@@ -551,30 +528,13 @@ footer a:hover{text-decoration:underline}
   fm.href = "mailto:" + E.contactEmail;
   document.title = E.name + " " + E.year + " — Team info";
 
-  /* ---------- wire the form to Google ---------- */
+  /* ---------- endpoint check ---------- */
   var form = $("form");
-  var missing = [];
-  if (/PASTE_FORM_ID/.test(CONFIG.formId)) missing.push("formId");
-  Object.keys(F).forEach(function(k){
-    if (/^entry\.0+\d?$/.test(F[k]) || /entry\.0{6,}/.test(F[k])) missing.push(k);
-  });
-
-  form.action = "https://docs.google.com/forms/d/e/" + CONFIG.formId + "/formResponse";
-  Array.prototype.forEach.call(form.querySelectorAll("[data-key]"), function(el){
-    var key = el.getAttribute("data-key");
-    if (F[key]) el.name = F[key];
-  });
-  ["fvv","pageHistory"].forEach(function(n,i){
-    var h = document.createElement("input");
-    h.type = "hidden"; h.name = n; h.value = i === 0 ? "1" : "0";
-    form.appendChild(h);
-  });
-
-  if (missing.length){
+  var offline = !CONFIG.endpoint || CONFIG.endpoint.indexOf("/exec") < 0;
+  if (offline){
     var w = $("notready");
     w.hidden = false;
-    w.innerHTML = "Not connected to Google Forms yet — sending is disabled. Missing: <code>" +
-      missing.join("</code> <code>") + "</code>";
+    w.innerHTML = "The form is not connected to the server yet. Please write to " + E.contactEmail + ".";
     $("send").disabled = true;
     $("send").textContent = "Sending disabled";
   }
@@ -676,14 +636,47 @@ footer a:hover{text-decoration:underline}
     return errs;
   }
 
-  var sent = false;
+  /* ---------- send ---------- */
+  function payload(){
+    var p = { token: CONFIG.token, website: $("website").value };
+    Array.prototype.forEach.call(form.querySelectorAll("[data-key]"), function(el){
+      p[el.getAttribute("data-key")] = el.type === "number" ? clamp(el.value) : el.value.trim();
+    });
+    return p;
+  }
+
+  function fail(messaggio){
+    var box = $("errors");
+    box.innerHTML = "";
+    var li = document.createElement("li");
+    li.textContent = messaggio;
+    box.appendChild(li);
+    $("send").disabled = false;
+    $("send").textContent = "Send our numbers";
+    box.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+
+  function success(risposta){
+    $("dSleep").textContent = sum("sleep");
+    $("dDinner").textContent = sum("dinner");
+    $("dCost").textContent = (sum("dinner") * E.dinnerPrice) + " " + E.currency;
+    if (risposta && risposta.aggiornata){
+      $("done").querySelector("h2").textContent = "Updated. See you in Florence.";
+    }
+    form.style.display = "none";
+    $("done").classList.add("show");
+    $("done").scrollIntoView({behavior:"smooth", block:"center"});
+    try{ localStorage.removeItem(KEY); }catch(err){}
+  }
+
   form.addEventListener("submit", function(e){
-    if (missing.length){ e.preventDefault(); return; }
+    e.preventDefault();
+    if (offline) return;
+
     var errs = validate();
     var box = $("errors");
     box.innerHTML = "";
     if (errs.length){
-      e.preventDefault();
       errs.forEach(function(t){
         var li = document.createElement("li");
         li.textContent = t;
@@ -692,20 +685,35 @@ footer a:hover{text-decoration:underline}
       box.scrollIntoView({behavior:"smooth", block:"center"});
       return;
     }
-    sent = true;
+
     $("send").disabled = true;
     $("send").textContent = "Sending…";
-  });
 
-  $("sink").addEventListener("load", function(){
-    if (!sent) return;
-    $("dSleep").textContent = sum("sleep");
-    $("dDinner").textContent = sum("dinner");
-    $("dCost").textContent = (sum("dinner") * E.dinnerPrice) + " " + E.currency;
-    form.style.display = "none";
-    $("done").classList.add("show");
-    $("done").scrollIntoView({behavior:"smooth", block:"center"});
-    try{ localStorage.removeItem(KEY); }catch(err){}
+    // text/plain evita il preflight CORS, che Apps Script non gestisce
+    fetch(CONFIG.endpoint, {
+      method: "POST",
+      headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: JSON.stringify(payload())
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(risposta){
+      if (risposta && risposta.ok) success(risposta);
+      else fail(risposta && risposta.errore ? risposta.errore : "The server refused the answer. Try again.");
+    })
+    .catch(function(){
+      // La rete ha fatto i capricci: riproviamo senza leggere la risposta,
+      // così l'iscrizione parte comunque e non si perde nulla.
+      fetch(CONFIG.endpoint, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {"Content-Type": "text/plain;charset=utf-8"},
+        body: JSON.stringify(payload())
+      })
+      .then(function(){ success(null); })
+      .catch(function(){
+        fail("We could not reach the server. Check your connection and try again, or write to " + E.contactEmail + ".");
+      });
+    });
   });
 
   /* ---------- depth rail ---------- */
@@ -726,34 +734,26 @@ footer a:hover{text-decoration:underline}
 
 <!--
 ===============================================================
-GOOGLE FORM — questions to create, in this exact order
-Set every counter as "Short answer" with number validation
-(Response validation > Number > Greater than or equal to > 0).
-Do NOT use grids: they cap at 15 and make the sheet unreadable.
+COME FUNZIONA (per Andrea, non per le squadre)
 
-Settings > Responses:
-  - Collect email addresses = "Responder input"  (mandatory, or
-    the emailAddress field below will not work)
-  - Send responders a copy = Always
-  - Limit to 1 response = OFF (teams must be able to resend)
+Questa pagina NON usa Google Forms. Manda i dati in POST alla
+web app di Apps Script (CONFIG.endpoint), che li scrive nel
+foglio e manda l'email di conferma.
 
- 1. Email                              -> handled by "emailAddress"
- 2. Team name                          Short answer
- 3. Contact person                     Short answer
- 4. Phone or WhatsApp                  Short answer
- 5. Sleeping - male players            Short answer (number)
- 6. Sleeping - female players          Short answer (number)
- 7. Sleeping - companions              Short answer (number)
- 8. Sleeping - children                Short answer (number)
- 9. Sleeping - undecided               Short answer (number)
-10. First timers - how many            Short answer (number)
-11. First timers - names               Paragraph
-12. Dinner - meat menu                 Short answer (number)
-13. Dinner - vegan menu                Short answer (number)
-14. Dinner - gluten free menu          Short answer (number)
-15. Dinner - other menu                Short answer (number)
-16. Allergies and special needs        Paragraph
-17. Notes                              Paragraph
+Il JSON inviato usa queste chiavi, le stesse che si aspetta
+salvaIscrizione_() nel Codice.gs:
+
+  token, website (honeypot), email, team, contact, phone,
+  sleepMen, sleepWomen, sleepCompanions, sleepKids, sleepUndecided,
+  newbiesCount, newbiesNames,
+  dinnerMeat, dinnerVegan, dinnerGf, dinnerOther,
+  dietary, notes
+
+Se cambi il deployment, aggiorna CONFIG.endpoint qui sopra.
+Se cambi le chiavi qui, cambiale anche nel Codice.gs.
+
+Il campo "website" è nascosto fuori schermo: lo riempiono solo
+i bot. Se arriva pieno, il backend finge di accettare e butta via.
 ===============================================================
 -->
 </body>
