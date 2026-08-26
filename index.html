@@ -24,7 +24,6 @@
    ============================================================ */
 const CONFIG = {
   endpoint: "https://script.google.com/macros/s/AKfycbzshbrBQn9nwn09nKUJoyNFpLLVZjBLw6i0X1uAOKpCzE7uiaJQJq0bBFd11C6VluOB/exec",
-  token: "Qu32298374652!"!£££",
 
   event: {
     name:    "Firenze Cup",
@@ -34,7 +33,6 @@ const CONFIG = {
     dinnerDate: "Saturday 5 September",
     dinnerPrice: 28,
     currency: "€",
-    logo: "https://raw.githubusercontent.com/Andrea91x/immagini-UWR/cf9e13f6240e9fe83e99be32db149476337eb038/Logo-Firs.jpeg",
     contactEmail: "firs.uwr@gmail.com"
   }
 };
@@ -116,12 +114,12 @@ body{
   color:#0a2b3d;
   text-align:center;
 }
-.plaque{
-  display:inline-block; background:#fff;
-  padding:12px; border-radius:3px;
-  box-shadow:0 10px 34px rgba(3,25,42,.28);
+.crest{
+  display:block; margin:0 auto;
+  width:190px; height:auto;
+  filter:drop-shadow(0 12px 26px rgba(3,25,42,.35));
 }
-.plaque img{display:block; width:96px; height:auto}
+@media(max-width:520px){ .crest{width:150px} }
 
 .eyebrow{
   margin:26px 0 0;
@@ -337,7 +335,11 @@ footer a:hover{text-decoration:underline}
 <div id="notready" class="notready" hidden></div>
 
 <header class="deck">
-  <div class="plaque"><img id="logo" src="" alt="FIRS Firenze Rugby Subacqueo"></div>
+  <img id="logo" class="crest"
+       src="logo-firs.png"
+       data-fallback="https://raw.githubusercontent.com/Andrea91x/immagini-UWR/cf9e13f6240e9fe83e99be32db149476337eb038/Logo-Firs.jpeg"
+       width="420" height="385"
+       alt="A.S.D. Firenze Rugby Subacqueo">
   <p class="eyebrow">Underwater rugby</p>
   <h1>Firenze<br>Cup <span class="yr" id="hyear"></span></h1>
   <p class="meta"><b id="hdates"></b><br><span id="hvenue"></span></p>
@@ -516,7 +518,11 @@ footer a:hover{text-decoration:underline}
   var $ = function(id){ return document.getElementById(id); };
 
   /* ---------- fill event strings ---------- */
-  $("logo").src = E.logo;
+  var crest = $("logo");
+  crest.addEventListener("error", function once(){
+    crest.removeEventListener("error", once);
+    if (crest.getAttribute("data-fallback")) crest.src = crest.getAttribute("data-fallback");
+  });
   $("hyear").textContent = E.year;
   $("hdates").textContent = E.dates;
   $("hvenue").textContent = E.venue;
@@ -638,7 +644,7 @@ footer a:hover{text-decoration:underline}
 
   /* ---------- send ---------- */
   function payload(){
-    var p = { token: CONFIG.token, website: $("website").value };
+    var p = { website: $("website").value };
     Array.prototype.forEach.call(form.querySelectorAll("[data-key]"), function(el){
       p[el.getAttribute("data-key")] = el.type === "number" ? clamp(el.value) : el.value.trim();
     });
@@ -743,7 +749,7 @@ foglio e manda l'email di conferma.
 Il JSON inviato usa queste chiavi, le stesse che si aspetta
 salvaIscrizione_() nel Codice.gs:
 
-  token, website (honeypot), email, team, contact, phone,
+  website (honeypot), email, team, contact, phone,
   sleepMen, sleepWomen, sleepCompanions, sleepKids, sleepUndecided,
   newbiesCount, newbiesNames,
   dinnerMeat, dinnerVegan, dinnerGf, dinnerOther,
