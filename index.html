@@ -495,12 +495,26 @@ footer a:hover{text-decoration:underline}
   <section class="done card" id="done" aria-live="polite">
     <h2>Got it. See you in Florence.</h2>
     <p>A copy is on its way to your inbox.</p>
-    <p>Something changed? Open this page again and send new numbers — we always keep the latest one.</p>
     <div class="recap">
       <div class="mrow"><span class="lbl">Sleeping at the pool</span><span class="dots"></span><span class="val" id="dSleep">0</span></div>
       <div class="mrow"><span class="lbl">At the dinner</span><span class="dots"></span><span class="val" id="dDinner">0</span></div>
       <div class="mrow total"><span class="lbl">Dinner to pay on site</span><span class="dots"></span><span class="val" id="dCost">0 €</span></div>
     </div>
+    <div id="paypalBox" style="display:none;margin-top:22px">
+      <a id="paypalBtn" href="#" target="_blank" rel="noopener"
+         style="display:inline-block;background:#009cde;color:#fff;
+                font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:700;
+                padding:16px 32px;border-radius:4px;text-decoration:none;letter-spacing:.02em">
+        Pay via PayPal
+      </a>
+      <p style="margin:10px 0 0;color:var(--mute);font-size:13px">
+        Opens PayPal pre-filled with the dinner amount.<br>
+        You can also pay cash at the venue on Saturday.
+      </p>
+    </div>
+    <p style="margin-top:18px;color:var(--mute);font-size:14px">
+      Something changed? Open this page again and send new numbers — we always keep the latest one.
+    </p>
   </section>
 </main>
 
@@ -534,7 +548,7 @@ footer a:hover{text-decoration:underline}
   fm.href = "mailto:" + E.contactEmail;
   document.title = E.name + " " + E.year + " — Team info";
 
-  /* ---------- endpoint check ---------- */
+  /* ---------- endpoint check + config remota ---------- */
   var form = $("form");
   var offline = !CONFIG.endpoint || CONFIG.endpoint.indexOf("/exec") < 0;
   if (offline){
@@ -543,6 +557,21 @@ footer a:hover{text-decoration:underline}
     w.innerHTML = "The form is not connected to the server yet. Please write to " + E.contactEmail + ".";
     $("send").disabled = true;
     $("send").textContent = "Sending disabled";
+  }
+
+  /* Carica config pubblica (paypal, prezzo) in background */
+  var _paypalBase = '';
+  if (!offline){
+    fetch(CONFIG.endpoint + "?action=config")
+      .then(function(r){ return r.json(); })
+      .then(function(cfg){
+        if (cfg && cfg.ok){
+          if (cfg.paypal) _paypalBase = cfg.paypal;
+          if (cfg.prezzoCena) E.dinnerPrice = cfg.prezzoCena;
+          update(); /* aggiorna i totali con eventuale prezzo aggiornato */
+        }
+      })
+      .catch(function(){}); /* silenzioso: usiamo i valori di default */
   }
 
   /* ---------- steppers ---------- */
@@ -675,9 +704,21 @@ footer a:hover{text-decoration:underline}
     $("dSleep").textContent = sum("sleep");
     $("dDinner").textContent = sum("dinner");
     $("dCost").textContent = (sum("dinner") * E.dinnerPrice) + " " + E.currency;
+
     if (risposta && risposta.aggiornata){
       $("done").querySelector("h2").textContent = "Updated. See you in Florence.";
     }
+
+    /* PayPal: usa il link dal server se presente, altrimenti quello caricato in background */
+    var paypalBase = (risposta && risposta.paypal) ? risposta.paypal : _paypalBase;
+    var importo = risposta && risposta.importo > 0 ? risposta.importo : (sum("dinner") * E.dinnerPrice);
+    if (paypalBase && importo > 0) {
+      var btn = $("paypalBtn");
+      btn.href = paypalBase.replace(/\/$/, '') + "/" + importo + "EUR";
+      btn.textContent = "Pay " + importo + " € via PayPal";
+      $("paypalBox").style.display = "";
+    }
+
     form.style.display = "none";
     $("done").classList.add("show");
     $("done").scrollIntoView({behavior:"smooth", block:"center"});
