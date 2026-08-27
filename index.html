@@ -651,14 +651,23 @@ footer a:hover{text-decoration:underline}
     return p;
   }
 
+  function sblocca_() {
+    var allInputs = Array.prototype.slice.call(form.querySelectorAll("input,textarea,button"));
+    allInputs.forEach(function(el){ el.disabled = false; });
+    var sendBtn = $("send");
+    sendBtn.textContent = "Send our numbers";
+    sendBtn.style.opacity = "";
+    var ov = $("form-overlay");
+    if (ov) ov.remove();
+  }
+
   function fail(messaggio){
+    sblocca_();
     var box = $("errors");
     box.innerHTML = "";
     var li = document.createElement("li");
     li.textContent = messaggio;
     box.appendChild(li);
-    $("send").disabled = false;
-    $("send").textContent = "Send our numbers";
     box.scrollIntoView({behavior:"smooth", block:"center"});
   }
 
@@ -692,8 +701,18 @@ footer a:hover{text-decoration:underline}
       return;
     }
 
-    $("send").disabled = true;
-    $("send").textContent = "Sending…";
+    /* Blocca TUTTO il form subito — previene doppio click */
+    var allInputs = Array.prototype.slice.call(form.querySelectorAll("input,textarea,button"));
+    allInputs.forEach(function(el){ el.disabled = true; });
+    var sendBtn = $("send");
+    sendBtn.textContent = "Sending…";
+    sendBtn.style.opacity = "0.55";
+    /* overlay visivo sopra il form */
+    form.style.position = "relative";
+    var overlay = document.createElement("div");
+    overlay.id = "form-overlay";
+    overlay.style.cssText = "position:absolute;inset:0;z-index:99;cursor:wait;background:rgba(3,25,42,.15)";
+    form.appendChild(overlay);
 
     // text/plain evita il preflight CORS, che Apps Script non gestisce
     fetch(CONFIG.endpoint, {
