@@ -13,15 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <script>
-/* ============================================================
-   CONFIGURATION — the only part you need to touch
-   ============================================================
-   The page sends the answers straight to the Google Apps Script
-   web app, which writes them into the spreadsheet and emails a
-   confirmation. No Google Form involved.
-
-   If you redeploy the script, paste the new /exec URL here.
-   ============================================================ */
 const CONFIG = {
   endpoint: "https://script.google.com/macros/s/AKfycbzshbrBQn9nwn09nKUJoyNFpLLVZjBLw6i0X1uAOKpCzE7uiaJQJq0bBFd11C6VluOB/exec",
 
@@ -838,30 +829,5 @@ footer a:hover{text-decoration:underline}
   }
 })();
 </script>
-
-<!--
-===============================================================
-COME FUNZIONA (per Andrea, non per le squadre)
-
-Questa pagina NON usa Google Forms. Manda i dati in POST alla
-web app di Apps Script (CONFIG.endpoint), che li scrive nel
-foglio e manda l'email di conferma.
-
-Il JSON inviato usa queste chiavi, le stesse che si aspetta
-salvaIscrizione_() nel Codice.gs:
-
-  website (honeypot), email, team, contact, phone,
-  sleepMen, sleepWomen, sleepCompanions, sleepKids, sleepUndecided,
-  newbiesCount, newbiesNames,
-  dinnerMeat, dinnerVegan, dinnerGf, dinnerOther,
-  dietary, notes
-
-Se cambi il deployment, aggiorna CONFIG.endpoint qui sopra.
-Se cambi le chiavi qui, cambiale anche nel Codice.gs.
-
-Il campo "website" è nascosto fuori schermo: lo riempiono solo
-i bot. Se arriva pieno, il backend finge di accettare e butta via.
-===============================================================
--->
 </body>
 </html>
