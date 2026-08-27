@@ -433,37 +433,23 @@ footer a:hover{text-decoration:underline}
     <section class="card" id="s4">
       <p class="depth"><span>−4.0 m</span><span class="bar"></span><span>Dinner</span></p>
       <h2>Dinner, <span id="dinnerDay"></span></h2>
-      <p class="hint">Inside the pool area, right after the last match. <strong id="priceLine"></strong> per person, paid on site. Includes one beer or wine and still water — extra drinks paid directly.</p>
+      <p class="hint">Inside the pool area, right after the last match — no swimming afterwards. <strong id="priceLine"></strong> per person, paid on site. Meat menu: Antipasti Toscani · Pasta al ragù di carne · Arista con patate · Cantucci con crema. One beer or wine and still water included. Extra drinks paid directly.</p>
 
-      <div style="margin:0 0 22px;border-radius:2px;overflow:hidden;font-size:14px">
-        <div style="background:rgba(53,208,224,.1);border-left:3px solid var(--cyan);padding:12px 16px">
-          <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-bottom:8px">Meat menu</div>
-          <div style="line-height:1.9;color:var(--foam)">
-            <span style="color:var(--mute);display:inline-block;width:60px">Starter</span>Antipasti Toscani<br>
-            <span style="color:var(--mute);display:inline-block;width:60px">First</span>Pasta al ragù di carne<br>
-            <span style="color:var(--mute);display:inline-block;width:60px">Second</span>Arista con patate<br>
-            <span style="color:var(--mute);display:inline-block;width:60px">Dessert</span>Cantucci con crema
-          </div>
-        </div>
-        <div style="background:rgba(255,255,255,.04);border-left:3px solid rgba(138,175,192,.35);padding:10px 16px;font-size:13px;color:var(--mute)">
-          <strong style="color:var(--foam)">Vegetarian / vegan / gluten-free</strong> — menu details to be confirmed. Select how many people need these options so we can pass the numbers to the restaurant.
-        </div>
-      </div>
 
       <div class="count">
         <span class="who">Meat menu</span>
         <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer meat menu">–</button><input type="number" id="dinnerMeat" data-key="dinnerMeat" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Meat menus"><button type="button" data-step="1" aria-label="One more meat menu">+</button></span>
       </div>
       <div class="count">
-        <span class="who">Vegetarian / vegan<small>Menu to be confirmed</small></span>
+        <span class="who">Vegan menu</span>
         <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer vegetarian menu">–</button><input type="number" id="dinnerVegan" data-key="dinnerVegan" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Vegetarian menus"><button type="button" data-step="1" aria-label="One more vegetarian menu">+</button></span>
       </div>
       <div class="count">
-        <span class="who">Gluten-free<small>Please specify needs below</small></span>
+        <span class="who">Gluten-free menu</span>
         <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer gluten free menu">–</button><input type="number" id="dinnerGf" data-key="dinnerGf" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Gluten free menus"><button type="button" data-step="1" aria-label="One more gluten free menu">+</button></span>
       </div>
       <div class="count">
-        <span class="who">Other<small>Describe it below</small></span>
+        <span class="who">Something else<small>Describe it in the field below</small></span>
         <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer special menu">–</button><input type="number" id="dinnerOther" data-key="dinnerOther" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Other menus"><button type="button" data-step="1" aria-label="One more special menu">+</button></span>
       </div>
 
