@@ -433,34 +433,36 @@ footer a:hover{text-decoration:underline}
     <section class="card" id="s4">
       <p class="depth"><span>−4.0 m</span><span class="bar"></span><span>Dinner</span></p>
       <h2>Dinner, <span id="dinnerDay"></span></h2>
-      <p class="hint">Inside the pool area, right after the last match — no swimming afterwards. Tuscan menu: starters, pasta, meat with a side dish, one beer or wine, still water included. <strong id="priceLine"></strong> per person, paid on site. Extra drinks are paid directly at the restaurant.</p>
+      <p class="hint">Inside the pool area, right after the last match. <strong id="priceLine"></strong> per person, paid on site. Vegetarian and vegan options available on the night — no need to pre-book them.</p>
 
-      <div class="count">
-        <span class="who">Meat menu</span>
-        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer meat menu">–</button><input type="number" id="dinnerMeat" data-key="dinnerMeat" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Meat menus"><button type="button" data-step="1" aria-label="One more meat menu">+</button></span>
-      </div>
-      <div class="count">
-        <span class="who">Vegan menu</span>
-        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer vegan menu">–</button><input type="number" id="dinnerVegan" data-key="dinnerVegan" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Vegan menus"><button type="button" data-step="1" aria-label="One more vegan menu">+</button></span>
-      </div>
-      <div class="count">
-        <span class="who">Gluten-free menu</span>
-        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer gluten free menu">–</button><input type="number" id="dinnerGf" data-key="dinnerGf" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Gluten free menus"><button type="button" data-step="1" aria-label="One more gluten free menu">+</button></span>
-      </div>
-      <div class="count">
-        <span class="who">Something else<small>Describe it in the field below</small></span>
-        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer special menu">–</button><input type="number" id="dinnerOther" data-key="dinnerOther" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="Other menus"><button type="button" data-step="1" aria-label="One more special menu">+</button></span>
+      <div style="margin:0 0 18px;padding:14px 16px;background:rgba(53,208,224,.07);border-left:3px solid var(--cyan);border-radius:2px;font-size:14px;line-height:1.7;color:var(--foam)">
+        <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-bottom:8px">Saturday menu</div>
+        <div><span style="color:var(--mute)">Starter&nbsp;&nbsp;</span>Antipasti Toscani</div>
+        <div><span style="color:var(--mute)">First&nbsp;&nbsp;&nbsp;&nbsp;</span>Pasta al ragù di carne</div>
+        <div><span style="color:var(--mute)">Second&nbsp;&nbsp;</span>Arista con patate</div>
+        <div><span style="color:var(--mute)">Dessert&nbsp;&nbsp;</span>Cantucci con crema</div>
+        <div style="margin-top:8px;font-size:13px;color:var(--mute)">Includes one beer or wine and still water. Extra drinks paid directly.</div>
       </div>
 
-      <p class="tally">
+      <div class="count" style="border-bottom:0">
+        <span class="who">People joining the dinner</span>
+        <span class="stepper"><button type="button" data-step="-1" aria-label="One fewer person">–</button><input type="number" id="dinnerMeat" data-key="dinnerMeat" data-group="dinner" min="0" max="99" value="0" inputmode="numeric" aria-label="People joining the dinner"><button type="button" data-step="1" aria-label="One more person">+</button></span>
+      </div>
+
+      <!-- campi nascosti a zero — il backend li accetta ma non vengono inviati -->
+      <input type="hidden" id="dinnerVegan" data-key="dinnerVegan" value="0">
+      <input type="hidden" id="dinnerGf"    data-key="dinnerGf"    value="0">
+      <input type="hidden" id="dinnerOther" data-key="dinnerOther" value="0">
+
+      <p class="tally" style="margin-top:18px">
         <span><b id="dinnerTotal">0</b> at dinner</span>
         <span class="cost" id="dinnerCost">0 €</span>
       </p>
 
       <div class="field" style="margin-top:20px">
         <label for="dietary">Allergies and special needs
-          <span class="sub">Tell us who and what. The kitchen needs this in advance.</span></label>
-        <textarea id="dietary" data-key="dietary" placeholder="e.g. Marta — lactose intolerant; Jonas — no fish"></textarea>
+          <span class="sub">Tell us who and what — gluten intolerance, allergies, anything the kitchen should know.</span></label>
+        <textarea id="dietary" data-key="dietary" placeholder="e.g. Marta — coeliac; Jonas — no shellfish"></textarea>
       </div>
     </section>
 
@@ -681,12 +683,7 @@ footer a:hover{text-decoration:underline}
     } else {
       $("newbiesNames").classList.remove("invalid");
     }
-    if (clamp($("dinnerOther").value) > 0 && $("dietary").value.trim() === ""){
-      $("dietary").classList.add("invalid");
-      errs.push("Describe the special menus under allergies and special needs.");
-    } else {
-      $("dietary").classList.remove("invalid");
-    }
+    $("dietary").classList.remove("invalid");
     return errs;
   }
 
