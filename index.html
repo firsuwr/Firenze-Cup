@@ -500,7 +500,27 @@ footer a:hover{text-decoration:underline}
       <div class="mrow"><span class="lbl">At the dinner</span><span class="dots"></span><span class="val" id="dDinner">0</span></div>
       <div class="mrow total"><span class="lbl">Dinner to pay on site</span><span class="dots"></span><span class="val" id="dCost">0 €</span></div>
     </div>
-    <div id="paypalBox" style="display:none;margin-top:22px">
+    <div id="paypalBox" style="display:none;margin-top:24px">
+      <!-- Riferimento da copiare nella nota PayPal -->
+      <div style="background:var(--panel);border:1px solid var(--edge);border-radius:2px;
+                  padding:14px 18px;margin-bottom:14px;font-family:var(--mono)">
+        <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+                    color:var(--mute);margin-bottom:6px">Payment reference</div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span id="paypalRef" style="font-size:22px;font-weight:700;color:var(--cyan);
+                                      letter-spacing:.05em">FC-0000</span>
+          <button type="button" id="copyRef"
+                  style="font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+                         text-transform:uppercase;color:var(--cyan);background:transparent;
+                         border:1px solid var(--edge);padding:5px 12px;cursor:pointer;border-radius:2px">
+            Copy
+          </button>
+        </div>
+        <div style="margin-top:8px;font-size:13px;color:var(--mute);line-height:1.5">
+          When you pay on PayPal, paste this reference in the <b style="color:var(--foam)">note / message</b> field.<br>
+          It's the only way we can match your payment to your team.
+        </div>
+      </div>
       <a id="paypalBtn" href="#" target="_blank" rel="noopener"
          style="display:inline-block;background:#009cde;color:#fff;
                 font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:700;
@@ -508,7 +528,6 @@ footer a:hover{text-decoration:underline}
         Pay via PayPal
       </a>
       <p style="margin:10px 0 0;color:var(--mute);font-size:13px">
-        Opens PayPal pre-filled with the dinner amount.<br>
         You can also pay cash at the venue on Saturday.
       </p>
     </div>
@@ -712,11 +731,32 @@ footer a:hover{text-decoration:underline}
     /* PayPal: usa il link dal server se presente, altrimenti quello caricato in background */
     var paypalBase = (risposta && risposta.paypal) ? risposta.paypal : _paypalBase;
     var importo = risposta && risposta.importo > 0 ? risposta.importo : (sum("dinner") * E.dinnerPrice);
+    var refId = (risposta && risposta.id) ? risposta.id : '';
     if (paypalBase && importo > 0) {
       var btn = $("paypalBtn");
       btn.href = paypalBase.replace(/\/$/, '') + "/" + importo + "EUR";
       btn.textContent = "Pay " + importo + " € via PayPal";
+      if (refId) $("paypalRef").textContent = refId;
       $("paypalBox").style.display = "";
+
+      /* bottone copia */
+      $("copyRef").addEventListener("click", function(){
+        var toCopy = refId || $("paypalRef").textContent;
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(toCopy).then(function(){
+            $("copyRef").textContent = "Copied!";
+            setTimeout(function(){ $("copyRef").textContent = "Copy"; }, 2000);
+          });
+        } else {
+          /* fallback per browser vecchi */
+          var ta = document.createElement("textarea");
+          ta.value = toCopy; ta.style.position = "fixed"; ta.style.opacity = "0";
+          document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+          document.body.removeChild(ta);
+          $("copyRef").textContent = "Copied!";
+          setTimeout(function(){ $("copyRef").textContent = "Copy"; }, 2000);
+        }
+      });
     }
 
     form.style.display = "none";
